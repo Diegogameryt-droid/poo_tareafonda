@@ -11,28 +11,44 @@ public abstract class Bebida {
         setStock(stock);
     }
 
+    public abstract double calcularPrecio();
+    public abstract String obtenerDetalle();
+
+    public String getNombre() {
+        return nombre;
+    }
+
     public void setNombre(String nombre) {
         if (nombre == null || nombre.trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre no puede ser nulo o vacío.");
+            throw new IllegalArgumentException("El nombre de la bebida no puede estar vacío.");
         }
-        this.nombre = nombre;
+        this.nombre = nombre.trim();
+    }
+
+    public int getVolumenML() {
+        return volumenML;
     }
 
     public void setVolumenML(int volumenML) {
-        if (volumenML < 100 || volumenML > 3000) {
-            throw new IllegalArgumentException("El volumen debe estar entre 100 y 3000 ml.");
+        if (volumenML <= 0) {
+            throw new IllegalArgumentException("El volumen debe ser mayor a 0 mL.");
         }
         this.volumenML = volumenML;
     }
 
+    public int getStock() {
+        return stock;
+    }
+
     public void setStock(int stock) {
-        if (stock <= 0) {
-            throw new IllegalArgumentException("El stock debe ser un valor mayor que cero.");
+        if (stock < 0) {
+            throw new IllegalArgumentException("El stock no puede ser negativo.");
         }
         this.stock = stock;
     }
+
     @Override
     public String toString() {
-        return "Nombre: " + nombre + " | Volumen: " + volumenML + " ml";
+        return nombre + " (" + volumenML + " mL)";
     }
 }
