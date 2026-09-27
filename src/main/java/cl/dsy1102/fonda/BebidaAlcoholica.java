@@ -1,42 +1,61 @@
 package cl.dsy1102.fonda;
 
-public class BebidaAlcoholica {
-    private int LimitePorCliente;
+public class BebidaAlcoholica extends Bebida implements ConsumoResponsable {
     private double gradosAlcohol;
     private boolean certificada;
     private boolean ventaRestringida;
-    private String nombre;
 
-    public BebidaAlcoholica(String nombre, int LimitePorCliente, double gradosAlcohol) {
-        this.LimitePorCliente = LimitePorCliente;
-        this.gradosAlcohol = gradosAlcohol;
-        this.certificada = false;
+    public BebidaAlcoholica(String nombre, int volumenML, int stock, double gradosAlcohol, boolean certificada) {
+        super(nombre, volumenML, stock);
+        setGradosAlcohol(gradosAlcohol);
+        setCertificada(certificada);
         this.ventaRestringida = false;
-        this.nombre = nombre;
     }
 
-    public int getLimitePorCliente() {
-        return LimitePorCliente;
+    @Override
+    public double calcularPrecio() {
+        double precioBase = getVolumenML() * 2.5;
+        if (!certificada) {
+            precioBase *= 1.20; // Recargo del 20% si no está certificada
+        }
+        return precioBase;
     }
 
-    public void setLimitePorCliente(int limitePorCliente) {
-        LimitePorCliente = limitePorCliente;
+    @Override
+    public String obtenerDetalle() {
+        return "Bebida Alcohólica: " + getNombre() +
+                "\nVolumen: " + getVolumenML() + " mL" +
+                "\nStock: " + getStock() +
+                "\nGraduación: " + gradosAlcohol + "°" +
+                "\nCertificada: " + (certificada ? "Sí" : "No") +
+                "\nVenta Restringida: " + (ventaRestringida ? "Sí" : "No") +
+                "\nPrecio Final: $" + String.format("%.0f", calcularPrecio());
     }
 
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public boolean isVentaRestringida() {
+    @Override
+    public boolean tieneVentaRestringida() {
         return ventaRestringida;
     }
 
-    public void setVentaRestringida(boolean ventaRestringida) {
-        this.ventaRestringida = ventaRestringida;
+    @Override
+    public void restringirVenta() {
+        this.ventaRestringida = true;
+    }
+
+    @Override
+    public boolean superaLimite(int unidades) {
+        return unidades > LIMITE_UNIDADES_POR_CLIENTE;
+    }
+
+    public double getGradosAlcohol() {
+        return gradosAlcohol;
+    }
+
+    public void setGradosAlcohol(double gradosAlcohol) {
+        if (gradosAlcohol <= 0 || gradosAlcohol > 60) {
+            throw new IllegalArgumentException("Los grados de alcohol deben ser mayores a 0° y hasta 60°.");
+        }
+        this.gradosAlcohol = gradosAlcohol;
     }
 
     public boolean isCertificada() {
@@ -46,13 +65,4 @@ public class BebidaAlcoholica {
     public void setCertificada(boolean certificada) {
         this.certificada = certificada;
     }
-
-    public double getGradosAlcohol() {
-        return gradosAlcohol;
-    }
-
-    public void setGradosAlcohol(double gradosAlcohol) {
-        this.gradosAlcohol = gradosAlcohol;
-    }
 }
-
